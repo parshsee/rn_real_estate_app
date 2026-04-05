@@ -2,7 +2,7 @@
 
 - React Native
 - Expo
-- Nativewind
+- Nativewind: Setup with https://www.nativewind.dev/docs/getting-started/installation
 
 # Welcome to your Expo app 👋
 
