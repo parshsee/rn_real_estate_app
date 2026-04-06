@@ -1,8 +1,9 @@
 # Tech Stack Used
 
-- React Native
-- Expo
+- React Native w/ Expo
 - Nativewind: Setup with https://www.nativewind.dev/docs/getting-started/installation
+- Appwrite (Backend)
+- Google OAuth
 
 # Welcome to your Expo app 👋
 
