@@ -26,5 +26,6 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Stack />;
+  // Render the app's navigation stack with the header hidden for all screens
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
