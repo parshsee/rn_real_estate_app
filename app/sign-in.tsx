@@ -1,6 +1,8 @@
 import icons from "@/constants/icons";
 import images from "@/constants/images";
 import { login } from "@/lib/appwrite";
+import { useGlobalContext } from "@/lib/global-provider";
+import { Redirect } from "expo-router";
 import React from "react";
 import {
   Alert,
@@ -13,12 +15,21 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignIn = () => {
+  const { refetch, loading, isLoggedIn } = useGlobalContext();
+
+  // If you are logged in, if you try to go back to sign in page, it will automatically redirect you to the home page
+  if (!loading && isLoggedIn) {
+    return <Redirect href="/" />;
+  }
+
   const handleLogin = async () => {
     const result = await login();
 
     if (result) {
       // Navigate to the home screen
       console.log("Login successful:");
+      // Will also redirect to "/", which is index.tsx
+      refetch(); // Refetch user data to update the global context with the newly logged in user's information
     } else {
       Alert.alert("Login Failed", "Unable to log in. Please try again.");
     }
