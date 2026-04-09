@@ -1,5 +1,6 @@
 import { SplashScreen, Stack } from "expo-router";
 
+import GlobalProvider from "@/lib/global-provider";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import "./globals.css";
@@ -27,5 +28,10 @@ export default function RootLayout() {
   }
 
   // Render the app's navigation stack with the header hidden for all screens
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    // Wrap the entire app with the GlobalProvider to provide global state (like user authentication status) to all screens and components in the app
+    <GlobalProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </GlobalProvider>
+  );
 }
