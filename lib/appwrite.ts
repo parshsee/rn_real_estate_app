@@ -1,0 +1,103 @@
+import * as Linking from "expo-linking";
+import { openAuthSessionAsync } from "expo-web-browser";
+import { Account, Avatars, Client, OAuthProvider } from "react-native-appwrite";
+
+export const config = {
+  platform: "com.parshsee.realestateapp",
+  endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
+  projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
+};
+
+export const client = new Client();
+
+client
+  .setEndpoint(config.endpoint!)
+  .setProject(config.projectId!)
+  .setPlatform(config.platform!);
+
+// Generate image avatar based on the user's first and last name
+export const avatar = new Avatars(client);
+// Allow us to create new user accounts
+export const account = new Account(client);
+
+export async function login() {
+  try {
+    // Generate redirect URI to handle OAuth response
+    const redirectUri = Linking.createURL("/");
+    // Request an OAuth token from Appwrite for Google authentication
+    const response = await account.createOAuth2Token({
+      provider: OAuthProvider.Google,
+      success: redirectUri,
+    });
+
+    if (!response) {
+      throw new Error("Failed to log in");
+    }
+
+    // If we successfully created OAuth token, open web browser session for OAuth process to continue
+    const browserResult = await openAuthSessionAsync(
+      response.toString(),
+      redirectUri,
+    );
+
+    if (browserResult.type !== "success") {
+      throw new Error("Authentication failed");
+    }
+
+    // Parse newly returned url to extract the query parameters containing the OAuth token
+    const url = new URL(browserResult.url);
+    // Extract secret and userID
+    const secret = url.searchParams.get("secret")?.toString();
+    const userId = url.searchParams.get("userId")?.toString();
+
+    if (!secret || !userId) {
+      throw new Error("Failed to login: Missing secret or userId");
+    }
+
+    // Create a new account session
+    const session = await account.createSession({ userId, secret });
+
+    if (!session) {
+      throw new Error("Failed to create session");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error logging in:", error);
+    return false;
+  }
+}
+
+export async function logout() {
+  try {
+    // Delete the current session to log the user out
+    await account.deleteSession({ sessionId: "current" });
+    return true;
+  } catch (error) {
+    console.error("Error logging out:", error);
+    return false;
+  }
+}
+
+export async function getUser() {
+  try {
+    // Fetch the currently logged in user's details
+    const response = await account.get();
+
+    if (response.$id) {
+      // Form a new user avatar (generate an image containing that users initials)
+      const userAvatar = avatar.getInitials({
+        name: response.name,
+      });
+
+      // Return the user details along with the generated avatar url
+      return {
+        ...response,
+        avatar: userAvatar.toString(),
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
+}
