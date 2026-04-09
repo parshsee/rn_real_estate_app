@@ -79,7 +79,7 @@ export async function logout() {
   }
 }
 
-export async function getUser() {
+export async function getCurrentUser() {
   try {
     // Fetch the currently logged in user's details
     const response = await account.get();
@@ -96,6 +96,9 @@ export async function getUser() {
         avatar: userAvatar.toString(),
       };
     }
+
+    // Fixed error where it could return undefined if response.$id is falsy
+    return null;
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
