@@ -1,4 +1,5 @@
 import { useGlobalContext } from "@/lib/global-provider";
+import { Redirect, Slot } from "expo-router";
 import { ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -8,7 +9,7 @@ export default function AppLayout() {
 
   // Set to true for testing purposes, change to checking loading
   // If loadding, show activity indicator (loading screen)
-  if (true) {
+  if (loading) {
     return (
       <SafeAreaView className="bg-white h-full flex justify-center items-center">
         <ActivityIndicator className="text-primary-300" size="large" />
@@ -16,4 +17,13 @@ export default function AppLayout() {
     );
   }
 
+  // If not logged in, redirect to the sign in page
+  if (!isLoggedIn) {
+    {
+      return <Redirect href="/sign-in" />;
+    }
+  }
+
+  // If logged in, show the app's main content (the nested screens will be rendered inside the <Slot /> component)
+  return <Slot />;
 }
