@@ -37,8 +37,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   // !null => true, !true => false,
   // !{name: "John"} => false, !!{name: "John"} => true
 
-  console.log(JSON.stringify(user, null, 2));
-
   // Goal of this component isn't to render any data, but to wrap the screens with the GlobalContext provider and pass down the necessary values (isLoggedIn, user, loading, refetch) to the entire app.
   // This allows any component in the app to access these values without needing to pass them down through props.
   return (
