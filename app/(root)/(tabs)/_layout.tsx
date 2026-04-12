@@ -18,7 +18,7 @@ const TabIcon = ({
   <View className="flex-1 mt-3 flex flex-col items-center">
     <Image
       source={icon}
-      tintColor={focused ? "#0061ff" : "#66876"}
+      tintColor={focused ? "#0061ff" : "#666876"}
       resizeMode="contain"
       className="size-6"
     />
