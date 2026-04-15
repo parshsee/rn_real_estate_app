@@ -51,7 +51,7 @@ const profile = () => {
   // Using the global context to get user information and refetch from context provider
   const { user, refetch } = useGlobalContext();
 
-  console.log(user);
+  // TODO: Figure out why initials aren't showing up
 
   // Call logout function and alert user if they were logged out or not
   const handleLogout = async () => {
