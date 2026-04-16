@@ -1,4 +1,4 @@
-import Search from "@/components/search";
+import Search from "@/components/Search";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
 import { Image, Text, View } from "react-native";
@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   return (
-    <SafeAreaView className="bg-white h-4">
+    <SafeAreaView className="bg-white h-full">
       <View className="px-5">
         {/* View for positioning our elements*/}
         <View className="flex flex-row items-center justify-between mt-5">
