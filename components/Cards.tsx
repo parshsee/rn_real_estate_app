@@ -56,10 +56,46 @@ export const FeaturedCard = ({ onPress }: Props) => {
 };
 
 // Component for the regular cards
-export const Card = () => {
+export const Card = ({ onPress }: Props) => {
+  // TODO: Fix error  ERROR  Text strings must be rendered within a <Text> component. Says line 72?
+
   return (
-    <View>
-      <Text>Card</Text>
-    </View>
+    <TouchableOpacity
+      onPress={onPress}
+      className="flex-1 w-full mt-4 px-3 py-4 rounded-lg bg-white shadow-lg shadow-black-100/70 relative"
+    >
+      {/* Show rating on the top right of the image */}
+      <View className="flex flex-row items-center absolute px-2 top-5 right-5 bg-white/90 p-1 rounded-full z-50">
+        <Image source={icons.star} className="size-2.5" />
+        <Text className="text-xs font-rubik-bold text-primary-300 ml-0.5">
+          4.4
+        </Text>
+      </View>
+      {/* New York image */}
+      <Image source={images.newYork} className="w-full h-40 rounded-lg" />
+      {/* Render elements in a column from the bottom up, on top of the image */}
+      <View className="flex flex-col mt-2">
+        {/* Show the name of the card and address */}
+        <Text className="text-base font-rubik-bold text-black-300">
+          Cozy Studio
+        </Text>
+        <Text className="text-xs font-rubik text-black-200">
+          22 W 15th St, New York, NY 10011
+        </Text>
+
+        {/* Render elements in a row */}
+        <View className="flex flex-row items-center justify-between mt-2">
+          {/* Show  the price and a heart icon for saving*/}
+          <Text className="text-base font-rubik-bold text-primary-300">
+            $2,500
+          </Text>
+          <Image
+            source={icons.heart}
+            className="w-5 h-5 mr-2"
+            tintColor="#191d31"
+          />
+        </View>
+      </View>{" "}
+    </TouchableOpacity>
   );
 };
