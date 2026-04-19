@@ -28,8 +28,8 @@ export default function Index() {
         </View>
         {/* Search bar */}
         <Search />
+        {/* Featured Section */}
         <View className="my-5">
-          {/* Featured Section */}
           {/* Header */}
           <View className="flex flex-row items-center justify-between">
             <Text className="text-xl font-rubik-bold text-black-300">
@@ -47,7 +47,9 @@ export default function Index() {
             <FeaturedCard />
             <FeaturedCard />
           </View>
-          {/* Regular Card Section */}
+        </View>
+        {/* Regular Card Section */}
+        <View className="mt-5">
           {/* Header */}
           <View className="flex flex-row items-center justify-between">
             <Text className="text-xl font-rubik-bold text-black-300">
