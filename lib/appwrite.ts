@@ -1,11 +1,22 @@
 import * as Linking from "expo-linking";
 import { openAuthSessionAsync } from "expo-web-browser";
-import { Account, Avatars, Client, OAuthProvider } from "react-native-appwrite";
+import {
+  Account,
+  Avatars,
+  Client,
+  OAuthProvider,
+  TablesDB,
+} from "react-native-appwrite";
 
 export const config = {
   platform: "com.parshsee.realestateapp", // Unique identifier for the app, used by Appwrite to identify the platform
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
+  databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID,
+  galleriesTableId: process.env.EXPO_PUBLIC_APPWRITE_TABLE_GALLERIES,
+  reviewsTableId: process.env.EXPO_PUBLIC_APPWRITE_TABLE_REVIEWS,
+  agentsTableId: process.env.EXPO_PUBLIC_APPWRITE_TABLE_AGENTS,
+  propertiesTableId: process.env.EXPO_PUBLIC_APPWRITE_TABLE_PROPERTIES,
 };
 
 export const client = new Client();
@@ -15,10 +26,12 @@ client
   .setProject(config.projectId!)
   .setPlatform(config.platform!);
 
-// Generate image avatar based on the user's first and last name
+// Generate image avatar based on the user's first and last name with Appwrite
 export const avatar = new Avatars(client);
-// Allow us to create new user accounts
+// Allow us to create new user accounts with Appwrite
 export const account = new Account(client);
+// Allow us to use the Databases from Appwrite
+export const databases = new TablesDB(client);
 
 export async function login() {
   try {
