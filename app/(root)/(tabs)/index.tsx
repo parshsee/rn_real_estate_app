@@ -27,9 +27,9 @@ export default function Index() {
         </View>
         {/* Search bar */}
         <Search />
-        {/* Featured Section */}
-        {/* Header */}
         <View className="my-5">
+          {/* Featured Section */}
+          {/* Header */}
           <View className="flex flex-row items-center justify-between">
             <Text className="text-xl font-rubik-bold text-black-300">
               Featured
@@ -40,10 +40,30 @@ export default function Index() {
               </Text>
             </TouchableOpacity>
           </View>
+          <View className="flex flex-row gap-5 mt-5">
+            {/* Featured Card */}
+            <FeaturedCard />
+            <FeaturedCard />
+            <FeaturedCard />
+          </View>
+          {/* Regular Card Section */}
+          {/* Header */}
+          <View className="flex flex-row items-center justify-between">
+            <Text className="text-xl font-rubik-bold text-black-300">
+              Our Recommendations
+            </Text>
+            <TouchableOpacity>
+              <Text className="text-base font-rubik-bold text-primary-300">
+                See All
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View className="flex flex-row gap-5 mt-5">
+            {/* Regular Card */}
+            <Card />
+            <Card />
+          </View>
         </View>
-        {/* Featured Card */}
-        <FeaturedCard />
-        <Card />
       </View>
     </SafeAreaView>
   );
