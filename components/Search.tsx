@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Image, TextInput, TouchableOpacity, View } from "react-native";
 import { useDebouncedCallback } from "use-debounce";
 
+// Reusable component for searchbar, used in index and explore pages
+
 const Search = () => {
   const path = usePathname(); // Gets the path
   const params = useLocalSearchParams<{ query?: string }>(); // Gets the search params query as a string
