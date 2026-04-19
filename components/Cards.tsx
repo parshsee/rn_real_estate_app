@@ -3,6 +3,8 @@ import images from "@/constants/images";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
+// Reusable component for displaying cards, used in index and product details
+
 interface Props {
   onPress?: () => void; // Optional function that returns nothing
 }
