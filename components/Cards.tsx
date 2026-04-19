@@ -97,7 +97,7 @@ export const Card = ({ onPress }: Props) => {
             tintColor="#191d31"
           />
         </View>
-      </View>{" "}
+      </View>
     </TouchableOpacity>
   );
 };
