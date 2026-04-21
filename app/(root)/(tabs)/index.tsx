@@ -18,6 +18,9 @@ export default function Index() {
 
   return (
     <SafeAreaView className="bg-white h-full">
+      {/* This button allows you to seed the DB if dummy data is needed. Will delete all info in DB before seeding! */}
+      {/* <Button title="Seed" onPress={seed} /> */}
+
       {/* Flatlist creates a list of items, using 
               data: object to pull from
               renderItem: how each item from the data is displayed
