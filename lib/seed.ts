@@ -36,6 +36,7 @@ const facilities = [
   "Pet-Center",
 ];
 
+// Gets a random subset of data from the data.ts
 function getRandomSubset<T>(
   array: T[],
   minItems: number,
@@ -70,21 +71,35 @@ function getRandomSubset<T>(
   return arrayCopy.slice(0, subsetSize);
 }
 
+// Insert all those entries into Appwrite database
 async function seed() {
   try {
     // Clear existing data from all collections
     for (const key in COLLECTIONS) {
       const collectionId = COLLECTIONS[key as keyof typeof COLLECTIONS];
-      const documents = await databases.listDocuments(
-        config.databaseId!,
-        collectionId!,
-      );
-      for (const doc of documents.documents) {
-        await databases.deleteDocument(
-          config.databaseId!,
-          collectionId!,
-          doc.$id,
-        );
+      const documents = await databases.listRows({
+        databaseId: config.databaseId!,
+        tableId: collectionId!,
+      });
+      // Old way with collections, not supported anymore in Appwrite
+      //   const documents = await databases.listDocuments(
+      //     config.databaseId!,
+      //     collectionId!,
+      //   );
+      for (const doc of documents.rows) {
+        await databases.deleteRow({
+          databaseId: config.databaseId!,
+          tableId: collectionId!,
+          rowId: doc.$tableId,
+          transactionId: doc.$id,
+        });
+
+        // Old way with collections and documents, not supported anymore in Appwrite
+        // await databases.deleteDocument(
+        //   config.databaseId!,
+        //   collectionId!,
+        //   doc.$id,
+        // );
       }
     }
 
@@ -93,16 +108,27 @@ async function seed() {
     // Seed Agents
     const agents = [];
     for (let i = 1; i <= 5; i++) {
-      const agent = await databases.createDocument(
-        config.databaseId!,
-        COLLECTIONS.AGENT!,
-        ID.unique(),
-        {
+      const agent = await databases.createRow({
+        databaseId: config.databaseId!,
+        tableId: COLLECTIONS.AGENT!,
+        rowId: ID.unique(),
+        data: {
           name: `Agent ${i}`,
           email: `agent${i}@example.com`,
           avatar: agentImages[Math.floor(Math.random() * agentImages.length)],
         },
-      );
+      });
+      // Old way with collections and documents, not supported anymore in Appwrite
+      //   const agent = await databases.createDocument(
+      //     config.databaseId!,
+      //     COLLECTIONS.AGENT!,
+      //     ID.unique(),
+      //     {
+      //       name: `Agent ${i}`,
+      //       email: `agent${i}@example.com`,
+      //       avatar: agentImages[Math.floor(Math.random() * agentImages.length)],
+      //     },
+      //   );
       agents.push(agent);
     }
     console.log(`Seeded ${agents.length} agents.`);
@@ -110,17 +136,29 @@ async function seed() {
     // Seed Reviews
     const reviews = [];
     for (let i = 1; i <= 20; i++) {
-      const review = await databases.createDocument(
-        config.databaseId!,
-        COLLECTIONS.REVIEWS!,
-        ID.unique(),
-        {
+      const review = await databases.createRow({
+        databaseId: config.databaseId!,
+        tableId: COLLECTIONS.REVIEWS!,
+        rowId: ID.unique(),
+        data: {
           name: `Reviewer ${i}`,
           avatar: reviewImages[Math.floor(Math.random() * reviewImages.length)],
           review: `This is a review by Reviewer ${i}.`,
           rating: Math.floor(Math.random() * 5) + 1, // Rating between 1 and 5
         },
-      );
+      });
+      // Old way with collections and documents, not supported in Appwrite anymore
+      //   const review = await databases.createDocument(
+      //     config.databaseId!,
+      //     COLLECTIONS.REVIEWS!,
+      //     ID.unique(),
+      //     {
+      //       name: `Reviewer ${i}`,
+      //       avatar: reviewImages[Math.floor(Math.random() * reviewImages.length)],
+      //       review: `This is a review by Reviewer ${i}.`,
+      //       rating: Math.floor(Math.random() * 5) + 1, // Rating between 1 and 5
+      //     },
+      //   );
       reviews.push(review);
     }
     console.log(`Seeded ${reviews.length} reviews.`);
@@ -128,12 +166,21 @@ async function seed() {
     // Seed Galleries
     const galleries = [];
     for (const image of galleryImages) {
-      const gallery = await databases.createDocument(
-        config.databaseId!,
-        COLLECTIONS.GALLERY!,
-        ID.unique(),
-        { image },
-      );
+      const gallery = await databases.createRow({
+        databaseId: config.databaseId!,
+        tableId: COLLECTIONS.GALLERY!,
+        rowId: ID.unique(),
+        data: {
+          image,
+        },
+      });
+      // Old way with collections and documents, no longer supported in Appwrite
+      //   const gallery = await databases.createDocument(
+      //     config.databaseId!,
+      //     COLLECTIONS.GALLERY!,
+      //     ID.unique(),
+      //     { image },
+      //   );
       galleries.push(gallery);
     }
 
@@ -157,11 +204,11 @@ async function seed() {
               Math.floor(Math.random() * propertiesImages.length)
             ];
 
-      const property = await databases.createDocument(
-        config.databaseId!,
-        COLLECTIONS.PROPERTY!,
-        ID.unique(),
-        {
+      const property = await databases.createRow({
+        databaseId: config.databaseId!,
+        tableId: COLLECTIONS.PROPERTY!,
+        rowId: ID.unique(),
+        data: {
           name: `Property ${i}`,
           type: propertyTypes[Math.floor(Math.random() * propertyTypes.length)],
           description: `This is the description for Property ${i}.`,
@@ -178,7 +225,30 @@ async function seed() {
           reviews: assignedReviews.map((review) => review.$id),
           gallery: assignedGalleries.map((gallery) => gallery.$id),
         },
-      );
+      });
+      // Old way with collections and documents, no longer supported anymore in Appwrite
+      //   const property = await databases.createDocument(
+      //     config.databaseId!,
+      //     COLLECTIONS.PROPERTY!,
+      //     ID.unique(),
+      //     {
+      //       name: `Property ${i}`,
+      //       type: propertyTypes[Math.floor(Math.random() * propertyTypes.length)],
+      //       description: `This is the description for Property ${i}.`,
+      //       address: `123 Property Street, City ${i}`,
+      //       geolocation: `192.168.1.${i}, 192.168.1.${i}`,
+      //       price: Math.floor(Math.random() * 9000) + 1000,
+      //       area: Math.floor(Math.random() * 3000) + 500,
+      //       bedrooms: Math.floor(Math.random() * 5) + 1,
+      //       bathrooms: Math.floor(Math.random() * 5) + 1,
+      //       rating: Math.floor(Math.random() * 5) + 1,
+      //       facilities: selectedFacilities,
+      //       image: image,
+      //       agent: assignedAgent.$id,
+      //       reviews: assignedReviews.map((review) => review.$id),
+      //       gallery: assignedGalleries.map((gallery) => gallery.$id),
+      //     },
+      //   );
 
       console.log(`Seeded property: ${property.name}`);
     }
