@@ -138,6 +138,7 @@ export default function Index() {
                 When params.query is updated, triggers useEffect to refetch (calls the getProperties function again)
                 Passes the query, filter, and limit
                 Similar thing happens with Filter component, but it sets params.filter
+                --- Note: Also had to set up indexing in Appwrite for properties table, choosing to index by name, address, and type ---
             */}
             <Search />
             {/* Featured Section */}
