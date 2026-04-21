@@ -134,6 +134,11 @@ export default function Index() {
               <Image source={icons.bell} className="size-6" />
             </View>
             {/* Search bar */}
+            {/* Search input is set in params.query by Search component
+                When params.query is updated, triggers useEffect to refetch (calls the getProperties function again)
+                Passes the query, filter, and limit
+                Similar thing happens with Filter component, but it sets params.filter
+            */}
             <Search />
             {/* Featured Section */}
             <View className="my-5">
