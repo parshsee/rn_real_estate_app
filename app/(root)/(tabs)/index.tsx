@@ -2,7 +2,11 @@ import { Card, FeaturedCard } from "@/components/Cards";
 import Filters from "@/components/Filters";
 import Search from "@/components/Search";
 import icons from "@/constants/icons";
+import { getLatestProperties, getProperties } from "@/lib/appwrite";
 import { useGlobalContext } from "@/lib/global-provider";
+import { useAppwrite } from "@/lib/useAppwrite";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -15,6 +19,45 @@ You can't have two Flatlist or ScrollViews in different directions on the same s
 
 export default function Index() {
   const { user } = useGlobalContext();
+  // Get the query (optional) and filter (optional) from the search params
+  const params = useLocalSearchParams<{ query?: string; filter?: string }>();
+
+  // Call the Appwrite DB using useAppwrite, passing in the getLatestProperties function
+  // Returns data renamed to latestProperties and loading renamed to latestPropertiesLoading
+  const { data: latestProperties, loading: latestPropertiesLoading } =
+    useAppwrite({
+      fn: getLatestProperties,
+    });
+
+  // Call the Appwrite DB using useAppwrite, passing in the getProperties function and passing parameters for the function
+  // Params: filter and query, gotten from useLocalSearchParams, limit
+  const {
+    data: properties,
+    loading,
+    refetch,
+  } = useAppwrite({
+    fn: getProperties,
+    params: {
+      filter: params.filter!,
+      query: params.query!,
+      limit: 6,
+    },
+    skip: true,
+  });
+
+  // Function whenever property card is pressed to route to the property detail page
+  const handleCardPress = (id: string) => {
+    router.push(`/properties/${id}`);
+  };
+
+  // Whenever the filter or query changes, recall the getProperties fucntion using useEffect
+  useEffect(() => {
+    refetch({
+      filter: params.filter!,
+      query: params.query!,
+      limit: 6,
+    });
+  }, [params.filter, params.query]); // Called whenever params.filter OR params.query changes
 
   return (
     <SafeAreaView className="bg-white h-full">
@@ -40,9 +83,12 @@ export default function Index() {
             The FeaturedCards are another FlatList inside this, that is set to scroll horizontally 
       */}
       <FlatList
-        data={[1, 2, 3, 4]}
-        renderItem={({ item }) => <Card />}
-        keyExtractor={(item) => item.toString()}
+        data={properties}
+        renderItem={({ item }) => (
+          // For each item, render a Card, passing the item as prop (for its info) and onPress to route
+          <Card item={item} onPress={() => handleCardPress(item.$id)} />
+        )}
+        keyExtractor={(item) => item.$id}
         numColumns={2}
         contentContainerClassName="pb-32"
         columnWrapperClassName="flex gap-5 px-5"
@@ -91,9 +137,15 @@ export default function Index() {
                 bounces: Whether you can drag the scroll items up and down (or left and right depending on direction) or not
               */}
               <FlatList
-                data={[1, 2, 3]}
-                renderItem={({ item }) => <FeaturedCard />}
-                keyExtractor={(item) => item.toString()}
+                data={latestProperties}
+                renderItem={({ item }) => (
+                  // For each item, render a FeaturedCard, passing the item as prop (for its info) and onPress to route
+                  <FeaturedCard
+                    item={item}
+                    onPress={() => handleCardPress(item.$id)}
+                  />
+                )}
+                keyExtractor={(item) => item.$id}
                 horizontal
                 bounces={false}
                 showsHorizontalScrollIndicator={false}
