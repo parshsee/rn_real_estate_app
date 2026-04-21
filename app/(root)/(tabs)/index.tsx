@@ -1,5 +1,6 @@
 import { Card, FeaturedCard } from "@/components/Cards";
 import Filters from "@/components/Filters";
+import NoResults from "@/components/NoResults";
 import Search from "@/components/Search";
 import icons from "@/constants/icons";
 import { getLatestProperties, getProperties } from "@/lib/appwrite";
@@ -7,7 +8,14 @@ import { useGlobalContext } from "@/lib/global-provider";
 import { useAppwrite } from "@/lib/useAppwrite";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 /* ScrollView & FlatList Notes
@@ -68,6 +76,7 @@ export default function Index() {
               data: object to pull from
               renderItem: how each item from the data is displayed
               keyExtractor: function to extract a unique key for each item, helps react re-render
+              ListEmptyComponent: What shows if the array of objects passed in data above is empty
               ListHeaderComponent: The header of the FlatList, what shows before/above the renderItem
               numColumns: number of columns in the grid
               columnWrapperStyle: style for the wrapper of each column
@@ -93,6 +102,16 @@ export default function Index() {
         contentContainerClassName="pb-32"
         columnWrapperClassName="flex gap-5 px-5"
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          // When the data array is empty this is called
+          // If loading is true, display activity indicator
+          // Otherwise no the No Results component
+          loading ? (
+            <ActivityIndicator size="large" className="text-primary-300 mt-5" />
+          ) : (
+            <NoResults />
+          )
+        }
         ListHeaderComponent={
           <View className="px-5">
             {/* Header */}
@@ -130,27 +149,35 @@ export default function Index() {
                 </TouchableOpacity>
               </View>
 
-              {/* FlatList showing the FeaturedCards in a horizontal scroll
-                Doesn't trigger any warnings because it is rendered inside another FlatList instead of outside. See above note on having different directions
-                horizontal: Tells the list to scroll horizontally
-                showHorizontalScrollIndicator: Whether to show horizontal scrollbar or not
-                bounces: Whether you can drag the scroll items up and down (or left and right depending on direction) or not
-              */}
-              <FlatList
-                data={latestProperties}
-                renderItem={({ item }) => (
-                  // For each item, render a FeaturedCard, passing the item as prop (for its info) and onPress to route
-                  <FeaturedCard
-                    item={item}
-                    onPress={() => handleCardPress(item.$id)}
-                  />
-                )}
-                keyExtractor={(item) => item.$id}
-                horizontal
-                bounces={false}
-                showsHorizontalScrollIndicator={false}
-                contentContainerClassName="flex gap-5 mt-5"
-              />
+              {/* If the latestProperties is loading, show Activity Indicator
+            Else If the there are no properties show the No Results component 
+            Else show the FlatList */}
+              {latestPropertiesLoading ? (
+                <ActivityIndicator size="large" className="text-primary-300" />
+              ) : !latestProperties || latestProperties.length === 0 ? (
+                <NoResults />
+              ) : (
+                // FlatList showing the FeaturedCards in a horizontal scroll
+                //  Doesn't trigger any warnings because it is rendered inside another FlatList instead of outside. See above note on having different directions
+                //  horizontal: Tells the list to scroll horizontally
+                //  showHorizontalScrollIndicator: Whether to show horizontal scrollbar or not
+                //  bounces: Whether you can drag the scroll items up and down (or left and right depending on direction) or not
+                <FlatList
+                  data={latestProperties}
+                  renderItem={({ item }) => (
+                    // For each item, render a FeaturedCard, passing the item as prop (for its info) and onPress to route
+                    <FeaturedCard
+                      item={item}
+                      onPress={() => handleCardPress(item.$id)}
+                    />
+                  )}
+                  keyExtractor={(item) => item.$id}
+                  horizontal
+                  bounces={false}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerClassName="flex gap-5 mt-5"
+                />
+              )}
             </View>
             {/* Regular Card Section */}
             <View className="mt-5">
