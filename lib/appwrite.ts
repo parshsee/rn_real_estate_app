@@ -5,6 +5,7 @@ import {
   Avatars,
   Client,
   OAuthProvider,
+  Query,
   TablesDB,
 } from "react-native-appwrite";
 
@@ -115,5 +116,73 @@ export async function getCurrentUser() {
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
+  }
+}
+
+// This will get the "Featured" properties for the featured section
+export async function getLatestProperties() {
+  try {
+    // Get a list of properties ordered by their $createdAt timestamp, limit the list to max of 5
+    const result = await databases.listRows({
+      databaseId: config.databaseId!,
+      tableId: config.propertiesTableId!,
+      queries: [Query.orderAsc("$createdAt"), Query.limit(5)],
+    });
+
+    return result.rows;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+// Allows for querying, filtering, and more. Used for search
+// Accepts 3 params: filter, query, limit (? = optional). Params are of type: string, string, number
+export async function getProperties({
+  filter,
+  query,
+  limit,
+}: {
+  filter: string;
+  query: string;
+  limit?: number;
+}) {
+  try {
+    const buildQuery = [Query.orderDesc("$createdAt")]; // Create the initial query with one default query
+
+    // Append additional things to the query
+
+    // If filter exists and is not All, add another query checking where property type equals filter
+    if (filter && filter !== "All") {
+      buildQuery.push(Query.equal("type", filter));
+    }
+
+    // If a search query exists, add another query checking where property name OR property address OR property type equals query
+    if (query) {
+      buildQuery.push(
+        Query.or([
+          Query.search("name", query),
+          Query.search("address", query),
+          Query.search("type", query),
+        ]),
+      );
+    }
+
+    // If a limit exits, add another query limiting the number of results equal to the limit
+    if (limit) {
+      buildQuery.push(Query.limit(limit));
+    }
+
+    // Get a list of properties filtered by the buildQuery we constructed above
+    const result = await databases.listRows({
+      databaseId: config.databaseId!,
+      tableId: config.propertiesTableId!,
+      queries: buildQuery,
+    });
+
+    return result.rows;
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 }
