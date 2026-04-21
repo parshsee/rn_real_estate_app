@@ -90,8 +90,7 @@ async function seed() {
         await databases.deleteRow({
           databaseId: config.databaseId!,
           tableId: collectionId!,
-          rowId: doc.$tableId,
-          transactionId: doc.$id,
+          rowId: doc.$id,
         });
 
         // Old way with collections and documents, not supported anymore in Appwrite
