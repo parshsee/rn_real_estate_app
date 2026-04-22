@@ -1,11 +1,20 @@
 import { Card } from "@/components/Cards";
+import Filters from "@/components/Filters";
 import NoResults from "@/components/NoResults";
 import Search from "@/components/Search";
+import icons from "@/constants/icons";
 import { getProperties } from "@/lib/appwrite";
 import { useAppwrite } from "@/lib/useAppwrite";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // NOTE: This page is very similar to homepage, so some code and comments are copied from there
@@ -25,7 +34,7 @@ export default function Explore() {
     params: {
       filter: params.filter!,
       query: params.query!,
-      limit: 6,
+      limit: 20,
     },
     skip: true,
   });
@@ -40,7 +49,7 @@ export default function Explore() {
     refetch({
       filter: params.filter!,
       query: params.query!,
-      limit: 6,
+      limit: 20,
     });
   }, [params.filter, params.query]); // Called whenever params.filter OR params.query changes
 
@@ -62,11 +71,6 @@ export default function Explore() {
               contentContainerClassName: same as classname
               showVerticalScrollIndicator: show or hide the scrollbar
               scrollEnabled: whether scrolling is enabled ------ THIS IS SET TO FALSE SO THE FLATLIST DOESN'T SCROLL INDEPENDENTLY, INSTEAD THE SCROLLVIEW SCROLLS THE ENTIRE CONTENT INCLUDING THE FLATLIST
-      */}
-      {/* Essentially, 
-            We are showing everything from the Good Morning header to the Filters under Our Recommendations in the ListHeaderComponent
-            Then we are showing the Cards for Our Recommendations in the renderItem afterwards
-            The FeaturedCards are another FlatList inside this, that is set to scroll horizontally 
       */}
       <FlatList
         data={properties}
@@ -91,7 +95,29 @@ export default function Explore() {
         }
         ListHeaderComponent={
           <View className="px-5">
+            {/* Header */}
+            <View className="flex flex-row items-center justify-between mt-5">
+              {/* Back Button */}
+              <TouchableOpacity
+                onPress={() => router.back()}
+                className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center"
+              >
+                <Image source={icons.backArrow} className="size-5" />
+              </TouchableOpacity>
+              {/* Title */}
+              <Text className="text-base mr-2 text-center font-rubik-medium text-black-300">
+                Search for Your Ideal Home
+              </Text>
+              {/* Notification Button */}
+              <Image source={icons.bell} className="w-6 h-6" />
+            </View>
             <Search />
+            <View className="mt-5">
+              <Filters />
+              <Text className="text-xl font-rubik-bold text-black-300 mt-5">
+                Found {properties?.length} properties
+              </Text>
+            </View>
           </View>
         }
       />
