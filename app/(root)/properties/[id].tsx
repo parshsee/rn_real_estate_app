@@ -132,6 +132,15 @@ const Property = () => {
         </View>
 
         {/* Display property overview */}
+        <View className="mt-7">
+          <Text className="text-black-300 text-xl font-rubik-bold">
+            Overview
+          </Text>
+          <Text className="text-black-200 text-base font-rubik mt-2">
+            This is a modern apartment with a beautiful view. It has 5 bedrooms
+            and 5 bathrooms.
+          </Text>
+        </View>
       </View>
     </View>
   );
