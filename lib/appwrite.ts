@@ -196,6 +196,7 @@ export async function getPropertyById({ id }: { id: string }) {
       databaseId: config.databaseId!,
       tableId: config.propertiesTableId!,
       rowId: id,
+      queries: [Query.select(["*", "agent.*", "gallery.*", "reviews.*"])], // Select all columns from the property and all columns from the agent relationship, gallery relationship, and reviews relationship
     });
 
     return result;
