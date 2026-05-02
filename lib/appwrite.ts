@@ -186,3 +186,21 @@ export async function getProperties({
     return [];
   }
 }
+
+// Get a specific property by its id, used for the property detail page
+// Specify id in the parameters, which is of type string
+export async function getPropertyById({ id }: { id: string }) {
+  try {
+    // Call the Appwrite DB to get a specific row in the properties table with the id specified in the parameters
+    const result = await databases.getRow({
+      databaseId: config.databaseId!,
+      tableId: config.propertiesTableId!,
+      rowId: id,
+    });
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
