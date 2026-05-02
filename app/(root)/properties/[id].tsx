@@ -1,3 +1,4 @@
+import { facilities } from "@/constants/data";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
 import { getPropertyById } from "@/lib/appwrite";
@@ -27,8 +28,7 @@ const Property = () => {
     },
   });
 
-  // console.log(property);
-  console.log(property?.agent);
+  console.log(property);
   // console.log(property?.gallery);
   // console.log(property?.reviews);
 
@@ -174,7 +174,47 @@ const Property = () => {
               Facilities
             </Text>
 
-            {/* TODO: Add facility icons and names */}
+            {property?.facilities.length > 0 && (
+              <View className="flex flex-row flex-wrap items-start justify-start mt-2 gap-5">
+                {/* Loop through the property.facilities array and display the
+                  facility icon and title for each facility. We use the facilities
+                  constant to get the icon for each facility based on its title. */}
+                {property?.facilities.map((item: string, index: number) => {
+                  // Since the facility titles in the property.facilities array are formatted differently than the facilities in the constants file, we need to format them to match.
+                  // The enum in Appwrite uses hyphens, but the constants file uses spaces so we replace hyphens with spaces.
+                  // The constant file also has "Swimming Pool" as a facility, but the enum in Appwrite formats it as "Swimming-Pool", so we need to change that as well.
+                  item = item.split("-").join(" ");
+                  if (item === "Swimming Pool") item = "Swimming pool";
+
+                  // Get facility constant where its title matches the facility item from property.facilities array
+                  const facility = facilities.find(
+                    (facility) => facility.title === item,
+                  );
+
+                  return (
+                    <View
+                      key={index}
+                      className="flex flex-1 flex-col items-center min-w-16 max-w-20"
+                    >
+                      <View className="size-14 bg-primary-100 rounded-full flex items-center justify-center">
+                        <Image
+                          source={facility ? facility.icon : icons.info}
+                          className="size-6"
+                        />
+                      </View>
+
+                      <Text
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        className="text-black-300 text-sm text-center font-rubik mt-1.5"
+                      >
+                        {item}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            )}
           </View>
         </View>
       </ScrollView>
