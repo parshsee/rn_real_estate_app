@@ -1,3 +1,4 @@
+import Reviews from "@/components/Reviews";
 import { facilities } from "@/constants/data";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
@@ -259,6 +260,33 @@ const Property = () => {
               className="h-52 w-full mt-5 rounded-xl"
             />
           </View>
+
+          {/* Display reviews */}
+          {property?.reviews.length > 0 && (
+            <View className="mt-7">
+              <View className="flex flex-row items-center justify-between">
+                {/* Display rating and number of reviews */}
+                <View className="flex flex-row items-center">
+                  <Image source={icons.star} className="size-6" />
+                  <Text className="text-black-300 text-xl font-rubik-bold ml-2">
+                    {property?.rating} ({property?.reviews?.length} reviews)
+                  </Text>
+                </View>
+
+                {/* Button to view all reviews */}
+                <TouchableOpacity>
+                  <Text className="text-primary-300 text-base font-rubik-bold">
+                    View All
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Display first review */}
+              <View className="mt-5">
+                <Reviews />
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
