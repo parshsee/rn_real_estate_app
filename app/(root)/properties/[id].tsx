@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
   Dimensions,
+  FlatList,
   Image,
   Platform,
   ScrollView,
@@ -28,8 +29,8 @@ const Property = () => {
     },
   });
 
-  console.log(property);
-  // console.log(property?.gallery);
+  // console.log(property);
+  console.log(property?.gallery);
   // console.log(property?.reviews);
 
   return (
@@ -216,6 +217,31 @@ const Property = () => {
               </View>
             )}
           </View>
+
+          {/* Display prpoerty gallery */}
+          <View className="mt-7">
+            <Text className="text-black-300 text-xl font-rubik-bold">
+              Gallery
+            </Text>
+          </View>
+
+          {/* Loop through the property.gallery array and display each image */}
+          {property?.gallery.length > 0 && (
+            <FlatList
+              data={property?.gallery}
+              keyExtractor={(item) => item.$id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <Image
+                  source={{ uri: item.image }}
+                  className="size-40 rounded-xl"
+                />
+              )}
+              contentContainerClassName="flex gap-4 mt-3"
+              contentContainerStyle={{ paddingRight: 20 }}
+            />
+          )}
         </View>
       </ScrollView>
     </View>
