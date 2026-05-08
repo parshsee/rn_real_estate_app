@@ -283,7 +283,7 @@ const Property = () => {
 
               {/* Display first review */}
               <View className="mt-5">
-                <Reviews />
+                <Reviews item={property?.reviews[0]} />
               </View>
             </View>
           )}
