@@ -289,6 +289,34 @@ const Property = () => {
           )}
         </View>
       </ScrollView>
+
+      {/* Bottom pricing bar 
+        It's outside the ScrollView and absolutely positioned at the bottom of the screen so that it is always visible even when scrolling through the property details
+      */}
+      <View className="absolute bg-white bottom-0 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-7">
+        <View className="flex flex-row items-center justify-between gap-10">
+          {/* Display the price in a column (Price, then under the price cost) */}
+          <View className="flex flex-col items-start">
+            <Text className="text-black-200 text-xs font-rubik-medium">
+              Price
+            </Text>
+
+            <Text
+              className="text-primary-300 text-start text-2xl font-rubik-bold"
+              numberOfLines={1}
+            >
+              ${property?.price}
+            </Text>
+          </View>
+
+          {/* Display a button to book now */}
+          <TouchableOpacity className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400">
+            <Text className="text-white text-lg text-center font-rubik-bold">
+              Book Now
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
